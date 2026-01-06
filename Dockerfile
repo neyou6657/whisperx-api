@@ -35,10 +35,16 @@ COPY pyproject.toml uv.lock ./
 
 # 使用uv安装依赖（直接从uv.lock安装更可靠）
 RUN uv pip install --system --no-cache-dir --no-deps --upgrade pip && \
-    (echo "Attempting to install dependencies using uv.lock" && \
-     uv pip install --system --no-cache-dir --index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple -r <(uv pip compile --no-header pyproject.toml)) || \
-    (echo "Falling back to direct installation" && \
-     uv pip install --system --no-cache-dir --index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple \
+    (if [ -f uv.lock ]; then \
+         echo "Using existing uv.lock file for installation" && \
+         uv pip sync uv.lock --system --no-cache-dir --index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple; \
+     else \
+         echo "uv.lock not found, installing dependencies directly" && \
+         uv pip install --system --no-cache-dir --index-url https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple \
+             "ffmpeg-python>=0.2.0" "flask>=3.1.2" "openai>=2.7.2" "pydub>=0.25.1" "waitress>=3.0.2" "whisperx>=3.7.4"; \
+     fi) || \
+    (echo "Falling back to direct installation with official PyPI" && \
+     uv pip install --system --no-cache-dir --index-url https://pypi.org/simple \
          "ffmpeg-python>=0.2.0" "flask>=3.1.2" "openai>=2.7.2" "pydub>=0.25.1" "waitress>=3.0.2" "whisperx>=3.7.4")
 
 # 复制项目文件
