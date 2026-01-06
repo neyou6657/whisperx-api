@@ -46,13 +46,15 @@ HF_TOKEN = get_hf_token()
 # 设备和计算类型配置
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 COMPUTE_TYPE = "float16" if torch.cuda.is_available() else "int8"
-BATCH_SIZE = 16
+# 在Hugging Face CPU环境中，使用更小的batch size
+BATCH_SIZE = 4 if os.environ.get('SPACE_ID') else 16
 
-logging.info(f"使用设备: {DEVICE}，计算类型: {COMPUTE_TYPE}")
+logging.info(f"使用设备: {DEVICE}，计算类型: {COMPUTE_TYPE}，批处理大小: {BATCH_SIZE}")
 
 # 模型配置
 ALLOWED_MODELS = ['tiny', 'base', 'small', 'medium', 'large-v1', 'large-v2', 'large-v3', 'large-v3-turbo']
-DEFAULT_MODEL = 'large-v3'
+# 在Hugging Face CPU环境中，使用small模型作为默认值（平衡速度和准确度）
+DEFAULT_MODEL = 'small' if os.environ.get('SPACE_ID') else 'large-v3'
 
 # 模型缓存
 whisper_models_cache = {}
@@ -230,9 +232,15 @@ def open_browser(url):
 
 if __name__ == '__main__':
     check_ffmpeg()
-    host = '127.0.0.1'
-    port = 9092
-    url = f"http://{host}:{port}"
-    Timer(1, lambda: open_browser(url)).start()
+    # Hugging Face Spaces 环境配置
+    if os.environ.get('SPACE_ID'):
+        host = '0.0.0.0'
+        port = int(os.environ.get('PORT', 7860))
+        logging.info(f"检测到 Hugging Face Spaces 环境")
+    else:
+        host = '127.0.0.1'
+        port = 9092
+        url = f"http://{host}:{port}"
+        Timer(1, lambda: open_browser(url)).start()
     logging.info(f"服务已启动，正在监听 http://{host}:{port}")
     serve(app, host=host, port=port, threads=10)

@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg-info
+dist
+build
+.pytest_cache
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Hugging Face cache (will be created in /app/.cache/huggingface)
+.cache/
+
+# Logs
+*.log
+
+# Temporary files
+tmp
+temp
+.DS_Store
