@@ -13,6 +13,7 @@
 *   ⚡ **OpenAI 兼容 API**: 可作为 OpenAI Whisper API 的本地平替，无缝集成到现有项目中。
 *   🔒 **完全本地化**: 所有计算都在你的电脑上完成，确保数据隐私和安全。
 *   🎯 **高精度转录**: 基于强大的 WhisperX (FasterWhisper)，提供快速且准确的转录结果。
+*   ☁️ **云端部署**: 支持部署到 Hugging Face Spaces（免费CPU资源）。
 
 ## 🛠️ 准备工作
 
@@ -90,9 +91,9 @@ response_format: 固定值 diarized_json
 
 extra_body:
 
-	max_speakers: 最大说话人数量，-1:不启用，0:启用说话人并且不限制最大说话人数量，>0:最大说话人数量
+    max_speakers: 最大说话人数量，-1:不启用，0:启用说话人并且不限制最大说话人数量，>0:最大说话人数量
 
-	min_speakers: 最小说话人数量，=0:不指定最小说话人数量，>0:最小说话人数量
+    min_speakers: 最小说话人数量，=0:不指定最小说话人数量，>0:最小说话人数量
 
 **示例 Python 代码:**
 
@@ -109,9 +110,9 @@ with open(audio_path, "rb") as audio_file:
     model="large-v3", # 可选 'tiny', 'base', 'large-v3' 等
     file=audio_file,
     response_format="diarized_json", # 固定值
-	extra_body={
+    extra_body={
       "max_speakers": 4, # -1=不启用说话人识别，0=启用说话人并且不指定最大说话人数量，>0=最大说话人数量
-	  "min_speakers": 2  # =0 不指定最小说话人数量，>0=最小说话人数量
+      "min_speakers": 2  # =0 不指定最小说话人数量，>0=最小说话人数量
     },
   )
 
@@ -124,8 +125,8 @@ for segment in transcript.segments:
     
     print(f"[{start_time:.2f}s -> {end_time:.2f}s] {speaker}: {text}")
 
-# output: [TranscriptionDiarizedSegment(id=None, end=24.283, speaker=None, start=0.031, text='五老星系中發訊的有機分子我們林第三類接觸還有多人微博 真是展開拍攝任務已經進來中年最近也傳過來許多過去難以拍攝到的照片又越出天文學家在自然期看上發表了這場照片在藍色核心外環繞著一圈橘黃色的光 芒這是一個星系規模的甜甜圈', type=None), TranscriptionDiarizedSegment(id=None, end=40.821, speaker=None, start=24.263, text='這是一個傳送門這是外星文明的代生環其實這是一個還有有幾五多環方向聽的古老星系他的名字是SPT 臨四一巴 带選四十七因為名字很長以下我們就檢稱為SPT 臨四一巴吧', type=None), TranscriptionDiarizedSegment(id=None, end=57.544, speaker=None, start=40.801, text='這個結果有什麼特殊意義這代表我們發現外形生命的嗎?本集節目是販唐會員選題紅每個月都會製作由會員投票出來的題目如果你有好題目希望我們做一集來講解或討論哪上點擊加入按鈕成為我們的會員吧', type=None),...]	
-	
+# output: [TranscriptionDiarizedSegment(id=None, end=24.283, speaker=None, start=0.031, text='五老星系中發訊的有機分子我們林第三類接觸還有多人微博 真是展開拍攝任務已經進來中年最近也傳過來許多過去難以拍攝到的照片又越出天文學家在自然期看上發表了這場照片在藍色核心外環繞著一圈橘黃色的光 芒這是一個星系規模的甜甜圈', type=None), TranscriptionDiarizedSegment(id=None, end=40.821, speaker=None, start=24.263, text='這是一個傳送門這是外星文明的代生環其實這是一個還有有幾五多環方向聽的古老星系他的名字是SPT 臨四一巴 带選四十七因為名字很長以下我們就檢稱為SPT 臨四一巴吧', type=None), TranscriptionDiarizedSegment(id=None, end=57.544, speaker=None, start=40.801, text='這個結果有什麼特殊意義這代表我們發現外形生命的嗎?本集節目是販唐會員選題紅每個月都會製作由會員投票出來的題目如果你有好題目希望我們做一集來講解或討論哪上點擊加入按鈕成為我們的會員吧', type=None),...]    
+    
 ```
 
 
@@ -143,6 +144,9 @@ for segment in transcript.segments:
 *   **Q: 处理速度很慢怎么办？**
     A: 这是因为您在使用 CPU 进行计算。使用 NVIDIA GPU 会极大提升处理速度。
 
+## ☁️ 部署到 Hugging Face Spaces
+
+想将此项目部署到云端？查看 [**Hugging Face Spaces 部署指南**](DEPLOY_TO_HF.md)，了解如何使用免费CPU资源部署。
 
 
 ## 致谢
